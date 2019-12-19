@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 // import ReactDOM from 'react-dom';
 import './App.css';
 import PlayerBar from './components/PlayerBar'
-import { Pane, Text, Heading } from 'evergreen-ui';
+import { Pane, Heading } from 'evergreen-ui';
+
+import img_chip from "./resources/chip.png";
 
 function App() {
 
@@ -10,6 +12,16 @@ function App() {
     {
       id: 1,
       name: 'Player 1',
+      selected: false
+    },
+    {
+      id: 2,
+      name: 'Player 2',
+      selected: false
+    },
+    {
+      id: 3,
+      name: 'Player 3',
       selected: false
     }
   ]);
@@ -26,6 +38,7 @@ function App() {
       <PlayerBar 
         players = { crapsPlayers } 
         onPlayersChange = { handlePlayersChange } />
+      <img alt='chip' width='50px' src={img_chip}/>
     </div>
   );
 }
