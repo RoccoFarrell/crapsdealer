@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { majorScale, Pane, Card, Text, Button, TextInput, Icon, IconButton, Heading, minorScale } from 'evergreen-ui';
+import { majorScale, Pane, Card, Text, Button, Heading, minorScale } from 'evergreen-ui';
 
 import './BetsArea.css';
 
@@ -12,6 +12,8 @@ import img_offbutton from "../resources/offbutton.png";
 function BetsArea(props) {
     let crapsPlayers = props.players
     let gameState = props.gameState
+    let minBet = props.minBet
+    let debugMode = props.debugMode
 
     const randomRoll = () => {
         const min = 1;
@@ -31,30 +33,89 @@ function BetsArea(props) {
     const [bets, setBets] = useState([
         {
             id: 1,
-            name: 'Pass',
+            type: "basic",
+            label: "Pass",
             selected: false
         },
         {
             id: 2,
-            name: 'Odds',
+            type: "basic",
+            label: "Odds",
             selected: false
         },
         {
-            id: 2,
-            name: 'Buy',
+            id: 3,
+            type: "buy",
+            label: "Buy 4",
             selected: false
         },
         {
-            id: 2,
-            name: 'Hard',
+            id: 4,
+            type: "buy",
+            label: "Buy 5",
+            selected: false
+        },
+        {
+            id: 5,
+            type: "buy",
+            label: "Buy 6",
+            selected: false
+        },
+        {
+            id: 6,
+            type: "buy",
+            label: "Buy 8",
+            selected: false
+        },
+        {
+            id: 7,
+            type: "buy",
+            label: "Buy 9",
+            selected: false
+        },
+        {
+            id: 8,
+            type: "buy",
+            label: "Buy 10",
+            selected: false
+        },
+        {
+            id: 9,
+            type: "hard",
+            label: "Hard 4",
+            selected: false
+        },
+        {
+            id: 10,
+            type: "hard",
+            label: "Hard 6",
+            selected: false
+        },
+        {
+            id: 11,
+            type: "hard",
+            label: "Hard 8",
+            selected: false
+        },
+        {
+            id: 12,
+            type: "hard",
+            label: "Hard 10",
             selected: false
         }
-      ]);
-    
+    ])
+
     const [rollFlag, setRollFlag] = useState(false)
 
-    const rollHandler = () => {
-        const tempRoll = randomRoll()
+    const rollHandler = (inputRoll) => {
+        let tempRoll = 0
+
+        if(inputRoll){
+            tempRoll = inputRoll
+        } else {
+            tempRoll = randomRoll()
+        }
+
         setRollFlag(!rollFlag)  
 
         let tempArr = roll.lastTenRolls
@@ -74,12 +135,8 @@ function BetsArea(props) {
         setRotate(true)
     }
 
-    const crapsButtonHandler = () => {
-        props.gameState.pointOn ? console.log('on') : console.log('off')
-    }
-
-    const bgColor = (bet) => {
-        return ((bet.selected === true) ? 'yellow' : 'white' )
+    const bgColor = (betID) => {
+        return ((bets.filter(bet => {return bet.id === betID})[0].selected === true) ? 'yellow' : 'white' )
     }
 
     const rollBg = (index) => {
@@ -91,6 +148,77 @@ function BetsArea(props) {
         
     }
 
+    const betGroupPane = (group) => {
+        return (
+            <Pane
+                display= 'flex'
+                flexDirection='column'
+            >
+                <Heading>{group.charAt(0).toUpperCase() + group.slice(1)}</Heading>
+                {bets.filter(bet => {return bet.type === group}).map((bet, index) => (
+                    <Card
+                        key={group + bet.id}
+                        display='flex'
+                        alignItems='center'
+                        justifyContent='space-evenly'
+                        flexDirection='column'
+                        elevation={2}
+                        width={56}
+                        height={56}
+                        // className='betPane'
+                        borderRadius={majorScale(1)}
+                        background={bgColor(bet.id)}
+                        padding={minorScale(1)}
+                        margin={minorScale(1)}
+                        onClick={() => {
+                            //console.log(bet)
+                            let selectedBet = bets.filter(b => {
+                                return b.id === bet.id
+                            })[0]
+                            selectedBet.selected = (selectedBet.selected === true ? false : true) 
+                            setBets([...bets])
+                            console.log(selectedBet)
+                        }}
+                    >
+                        <img 
+                            alt='chip' 
+                            height='24px' 
+                            width='24px' 
+                            src={img_chip}
+                        />
+                        <Text>
+                            {bet.label}
+                        </Text>
+                    </Card>
+                ))}
+            </Pane>
+        )
+    }
+
+    const debugDiceVals = () => {
+        return (
+        <Pane 
+            display='flex' 
+            flexDirection='column'
+        >
+            {[2,3,4,5,6,7,8,9,10,11,12].map(val => {
+                return (
+                    <Button
+                        key={val}
+                        height={24}
+                        marginY={1}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            rollHandler(val)
+                        }}
+                    >
+                        {val}
+                    </Button>
+                )
+            })}
+        </Pane>
+        )
+    }
     useEffect(() => {
         if(rotate) {
             setTimeout(() => {
@@ -123,7 +251,11 @@ function BetsArea(props) {
                     rollHandler()
                 }}
             >
-                <img alt='diceroll' width='100px' height='100px' src={img_diceroll}/>
+                { debugMode ? debugDiceVals()  : (<div></div>)}
+                
+                <Pane>
+                    <img alt='diceroll' width='100px' height='100px' src={img_diceroll} />
+                </Pane>
             </Pane>
 
             {/* Roll Details Area */}
@@ -180,6 +312,9 @@ function BetsArea(props) {
                         />
                     </Pane>          
                 </Pane>
+                <Pane>
+                    
+                </Pane>
             </Pane>
 
             {/* Last Rolls Area */}
@@ -205,15 +340,17 @@ function BetsArea(props) {
                     </Pane>
                 ))}
             </Pane>
+            
             {/* Bets Area */}
             <Pane
                 display='flex'
                 height='100%'
                 width='65%'
+                overflow='scroll'
                 background='tealTint'
-                paddingX={majorScale(1)}
+                padding={majorScale(1)}
                 elevation={2}
-                alignItems='center'
+                alignItems='flex-start'
                 justifyContent='flex-start'
             >
                 {/* Quick Bets */}
@@ -221,6 +358,7 @@ function BetsArea(props) {
                     display='flex'
                     height='100%'
                     width='15%'
+                    minWidth='100px'
                     background='tealTint'
                     flexDirection='column'
                     paddingY={majorScale(1)}
@@ -230,22 +368,26 @@ function BetsArea(props) {
                 >     
                     <Button
                         iconBefore='ring'
-                        intent='warning'
                         marginY={minorScale(1)}
                         onClick={() => {
                             crapsPlayers.forEach(player => {
-                                player.bets.pass = true
+                                player.bets.pass.enabled = true
+                                player.bets.pass.count += 1
+                                player.money -= minBet
                             })
                             props.onPlayersChange(crapsPlayers)
                         }}
-                    > All Pass </Button>
+                    >All Pass</Button>
                     <Button
                         iconBefore='selection'
                         intent='success'
                         marginY={minorScale(1)}
+                        disabled={!gameState.pointOn}
                         onClick={() => {
                             crapsPlayers.forEach(player => {
-                                player.bets.odds = true
+                                player.bets.odds.enabled = true
+                                player.bets.odds.count += 1
+                                player.money -= minBet
                             })
                             props.onPlayersChange(crapsPlayers)
                         }}
@@ -263,37 +405,20 @@ function BetsArea(props) {
                         }}
                     > Clear All </Button> 
                 </Pane>
-                {bets.map((bet, index) => (
-                    <Card
-                        key={index}
-                        display='flex'
-                        flexDirection='column'
-                        elevation={2}
-                        // className='betPane'
-                        borderRadius={majorScale(1)}
-                        background={bgColor(bets[index])}
-                        padding={majorScale(1)}
-                        margin={majorScale(1)}
-                        onClick={() => {
-                            bets[index].selected = (bets[index].selected === true ? false : true)
-                            setBets([...bets])
-                        }}
-                    >
-                        <img 
-                            alt='chip' 
-                            height='50px' 
-                            width='50px' 
-                            src={img_chip}
-                        />
-                        <Text>
-                            {bet.name}
-                        </Text>
-                    </Card>
-
-
-                ))}
+                
+                {/* All Bets */}
+                <Pane
+                    display='flex'
+                    marginX={majorScale(1)}
+                >
+                    {betGroupPane('basic')}
+                    {betGroupPane('buy')}
+                    {betGroupPane('hard')}
+                </Pane>
+                <Pane>
                     <Button marginRight={16} appearance="primary" intent="success">Add</Button>
                     <Button marginRight={16} appearance="primary" intent="danger">Delete</Button>
+                </Pane>
             </Pane>
         </Pane>
     )

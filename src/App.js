@@ -7,116 +7,175 @@ import { Pane } from 'evergreen-ui';
 
 function App() {
 
-  const [crapsPlayers, setCrapsPlayers] = useState([
-    {
-      id: 1,
-      name: 'Rocco',
-      selected: false,
-      money: 100,
-      bets: {}
-    },
-    {
-      id: 2,
-      name: 'Truckle',
-      selected: false,
-      money: 100,
-      bets: {}
-    },
-    {
-      id: 3,
-      name: 'Matt',
-      selected: false,
-      money: 100,
-      bets: {}
-    },
-    {
-      id: 4,
-      name: 'Joe',
-      selected: false,
-      money: 100,
-      bets: {}
-    },
-    {
-      id: 5,
-      name: 'Ben',
-      selected: false,
-      money: 100,
-      bets: {}
-    },
-    {
-      id: 6,
-      name: 'Amalie',
-      selected: false,
-      money: 100,
-      bets: {}
-    }
+	const [minBet, setMinBet] = useState(1)
+	const [debugMode, setDebugMode] = useState(false)
+
+	const generatePlayer = (inputID, inputName, inputMoney) => {
+		return (
+		{ 
+			id: inputID,
+			name: inputName,
+			selected: false,
+			money: inputMoney,
+			bets: {
+			pass: {
+				enabled: false,
+				count: 0
+			},
+			odds: {
+				enabled: false,
+				count: 0
+			}
+			}
+		}
+		)
+	}
+
+const [crapsPlayers, setCrapsPlayers] = useState([
+    generatePlayer(1, 'Rocco', 20),
+    generatePlayer(2, 'Joe', 20),
+    generatePlayer(3, 'Truckle', 20),
+    generatePlayer(4, 'Matt', 20),
+    generatePlayer(5, 'Ben', 20)
   ]);
 
-  const [gameState, setGameState] = useState({
+const [gameState, setGameState] = useState({
     pointOn: false,
     point: 0
   })
 
-  const handlePlayersChange = (playersArr) => {
+const handlePlayersChange = (playersArr) => {
     setCrapsPlayers([...playersArr])
   }
 
-  const handleGameStateChange = (gameStateObj) => {
+const handleAddPlayer = (newName) => {
+    setCrapsPlayers([
+      ...crapsPlayers,
+      generatePlayer(crapsPlayers.length + 1, newName, 20)
+    ])
+  }
+
+const handleGameStateChange = (gameStateObj) => {
     setGameState({...gameStateObj})
   }
 
-  const handleRollCalc = (roll) => {
-    console.log('received roll' + roll)
+const handleMinBetChange = (newMinBet) => {
+    setMinBet(newMinBet)
+  }
 
-    //Point is off
-    if(gameState.pointOn === false){
-      if(roll === 7){
-        console.log('point off and 7')
-        crapsPlayers.forEach(player => {
-          if(player.bets.pass === true){
-            player.money += 10 
-          }
-        })
-        handlePlayersChange(crapsPlayers)
-      }
+const handleDebugChange = () => {
+    setDebugMode(!debugMode)
+  }
 
-      if([4,5,6,8,9,10].includes(roll)){
-        gameState.pointOn = true
-        gameState.point = roll
-        handleGameStateChange(gameState)
-      }
-    } else {
-      // Point is on
-      if(roll === 7){
-        gameState.pointOn = false
-        handleGameStateChange(gameState)
-        crapsPlayers.forEach(player => {
-          player.bets.pass = player.bets.odds = false
-        })
-      }
-      if([4,5,6,8,9,10].includes(roll)){
-        if(gameState.point === roll){
-          gameState.pointOn = false
-          handleGameStateChange(gameState)
-          crapsPlayers.forEach(player => {
-            if(player.bets.pass === true){
-              player.money += 30 
-            }
-          })
-          handlePlayersChange(crapsPlayers)
+const handleBetAdjust = (playerID, betID, winFlag, winRoll) => {
+	// console.log('playerID: ', playerID, 'betID: ', betID, 'winFlag: ', winFlag, 'winRoll: ', winRoll)
+    let findPlayer = crapsPlayers.filter(p => {return p.id === playerID})[0]
+
+    //adjust bets
+    switch(betID){
+      case 'pass':
+        if(winFlag){
+			// console.log('paying out pass to ', findPlayer.name, ': ', (minBet * (findPlayer.bets.pass.count * 2)))
+          	findPlayer.money += (minBet * (findPlayer.bets.pass.count * 2))
         }
-      }
+        findPlayer.bets.pass.enabled = false
+        findPlayer.bets.pass.count = 0
+        break
+      case 'odds':
+        if(winFlag){
+			console.log(playerID, ' won odds bet')
+			switch(winRoll){
+				case 4:
+				case 10:
+					// console.log('paying out odds to ', findPlayer.name, ': ', (minBet * (findPlayer.bets.odds.count * 3)))
+					findPlayer.money += (minBet * (findPlayer.bets.odds.count * 3))
+					break
+				case 5:
+				case 9:
+					// console.log('paying out odds ', findPlayer.name, ': ', (minBet * (findPlayer.bets.odds.count * 2.5)))
+					findPlayer.money += (minBet * (findPlayer.bets.odds.count * 2.5))
+					break
+				case 6:
+				case 8:
+					//console.log('paying out odds to ', findPlayer.name, ': ', (minBet * (findPlayer.bets.odds.count * 2.2)))
+					findPlayer.money += (minBet * (findPlayer.bets.odds.count * 2.2))
+					break
+				default:
+					break 
+			}
+			findPlayer.bets.odds.enabled = false
+			findPlayer.bets.odds.count = 0
+        } else {
+          findPlayer.bets.odds.enabled = false
+          findPlayer.bets.odds.count = 0
+        }
+        break
+      default:
+        break
+    }
+    handlePlayersChange(crapsPlayers)
+  }
+
+const calculateBets = (betID, winFlag, winRoll) => {
+	//Iterate over each player
+	crapsPlayers.forEach(player => {
+		if(player.bets.pass.enabled && betID === 'pass'){
+			handleBetAdjust(player.id, betID, winFlag, winRoll)
+		}
+
+		if(player.bets.odds.enabled && betID === 'odds'){
+			handleBetAdjust(player.id, betID, winFlag, winRoll)
+		}
+	})
+}
+
+const handleRollCalc = (roll) => {
+
+    let endPointOn = false
+    let winFlag = false
+
+	//Point Off
+	if(gameState.pointOn === false){
+		//Hit craps or 11
+		if(roll === 7 || roll === 11){
+			winFlag = true
+			calculateBets('pass', true, roll)
+		} else if(roll === 2 || roll === 3 || roll === 12){
+			winFlag = false
+			calculateBets('pass', false, roll)
+		}
+		//Point on
+		if([4,5,6,8,9,10].includes(roll)){
+			endPointOn = true
+			gameState.point = roll
+		}
+	} else {
+        // Point is on
+        // 7 Out
+        if(roll === 7){
+			endPointOn = false
+			calculateBets('pass', false, roll)
+			calculateBets('odds', false, roll)   
+        } else 
+        // Roll inner number
+        if([4,5,6,8,9,10].includes(roll)){
+			// POINT IS MADE!!
+			
+			if(gameState.point === roll){
+				console.log('point is made!!')
+				endPointOn = false
+				calculateBets('pass', true, roll)
+				calculateBets('odds', true, roll)  
+			}
+        } else
+        // Roll outer number
+        if([2,3,11,12].includes(roll)){
+        }
     }
 
-    if(gameState.pointOn === false && (roll === 2 || roll === 3 || roll === 12)) {
-      console.log('point off and crap')
-      crapsPlayers.forEach(player => {
-        if(player.bets.pass === true){
-          player.money -= 10
-        }  
-      })
-      handlePlayersChange(crapsPlayers)
-    }
+	gameState.pointOn = endPointOn
+	gameState.lastResult = winFlag
+    handleGameStateChange(gameState)
   }
 
   return (
@@ -128,13 +187,20 @@ function App() {
       {/* Player Bar */}
       <PlayerBar 
         players = { crapsPlayers } 
-        gameState = { gameState }
         onPlayersChange = { handlePlayersChange }
-        onGameStateChange = { handleGameStateChange } />
+        addPlayer = { handleAddPlayer }
+        gameState = { gameState }
+        onGameStateChange = { handleGameStateChange }
+        minBet = { minBet }
+        onMinBetChange = { handleMinBetChange } 
+        debugMode = { debugMode }
+        onDebugChange = { handleDebugChange }/>
       {/* Bets */}
       <BetsArea
+        minBet = { minBet }
         players = { crapsPlayers } 
         gameState = { gameState }
+        debugMode = { debugMode }
         onPlayersChange = { handlePlayersChange }
         onGameStateChange = { handleGameStateChange }
         onRoll = { handleRollCalc }
