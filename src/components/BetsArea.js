@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { majorScale, Pane, Text, TextInput, Icon, IconButton, Heading } from 'evergreen-ui';
+
+import './BetsArea.css';
 
 import img_chip from "../resources/chip.png";
 import img_diceroll from "../resources/dices.png";
@@ -7,6 +9,8 @@ import img_diceroll from "../resources/dices.png";
 function BetsArea(props) {
 
     const [roll, setRoll] = useState(7)
+    const [rotate, setRotate] = useState(false)
+    const imageRef = useRef(null)
 
     let rollHandler = () => {
         const min = 1;
@@ -14,7 +18,18 @@ function BetsArea(props) {
         let tempRoll = Math.round(min + Math.random() * (max - min)) + Math.round(min + Math.random() * (max - min))
         console.log(tempRoll)
         setRoll(tempRoll)
+        setRotate(true)
     }
+
+    useEffect(() => {
+        if(rotate) {
+            setTimeout(() => {
+                setRotate(false)
+            }, 1000)
+        }
+      }, [
+        rotate
+      ]);
 
     return (
         <Pane
@@ -46,7 +61,14 @@ function BetsArea(props) {
                 alignItems='center'
                 justifyContent='center'
             >
-                <img alt='chip' height='50px' width='50px' src={img_chip}/>
+                <img 
+                    alt='chip' 
+                    height='50px' 
+                    width='50px' 
+                    src={img_chip}
+                    className={rotate ? "rotate" : ""}
+                    ref={imageRef}
+                />
                 <Heading 
                     size={800}
                     margin={majorScale(2)}
