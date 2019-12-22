@@ -16,7 +16,7 @@ function BetsArea(props) {
         const min = 1;
         const max = 6;
         let tempRoll = Math.round(min + Math.random() * (max - min)) + Math.round(min + Math.random() * (max - min))
-        console.log(tempRoll)
+        // console.log(tempRoll)
         setRoll(tempRoll)
         setRotate(true)
     }

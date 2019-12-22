@@ -48,7 +48,6 @@ function PlayerBar(props) {
                             onChange={e => {
                                 crapsPlayers[index].money = e.target.value
                                 props.onPlayersChange(crapsPlayers)
-                                console.log(crapsPlayers[index])
                             }}
                             onClick={e => e.stopPropagation()}
                             value={crapsPlayers[index].money}
