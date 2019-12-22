@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 // import ReactDOM from 'react-dom';
 import './App.css';
 import PlayerBar from './components/PlayerBar'
-import { Pane, Heading } from 'evergreen-ui';
-
-import img_chip from "./resources/chip.png";
+import BetsArea from './components/BetsArea'
+import { Pane } from 'evergreen-ui';
 
 function App() {
 
@@ -12,17 +11,20 @@ function App() {
     {
       id: 1,
       name: 'Player 1',
-      selected: false
+      selected: false,
+      money: 0
     },
     {
       id: 2,
       name: 'Player 2',
-      selected: false
+      selected: false,
+      money: 0
     },
     {
       id: 3,
       name: 'Player 3',
-      selected: false
+      selected: false,
+      money: 0
     }
   ]);
 
@@ -33,12 +35,17 @@ function App() {
   return (
     <div className="App">
       <Pane width='100vw'>
-        <Heading size={700}>Craps Calculator</Heading>
+        {/* <Heading size={700}>Craps Calculator</Heading> */}
       </Pane>
+
+      {/* Player Bar */}
       <PlayerBar 
         players = { crapsPlayers } 
         onPlayersChange = { handlePlayersChange } />
-      <img alt='chip' width='50px' src={img_chip}/>
+
+      {/* Bets */}
+
+      <BetsArea/>
     </div>
   );
 }

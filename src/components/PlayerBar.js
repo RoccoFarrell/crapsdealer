@@ -1,10 +1,10 @@
 import React from 'react';
-import { Pane, Text, Icon, IconButton } from 'evergreen-ui';
+import { majorScale, Pane, Text, TextInput, Icon, IconButton } from 'evergreen-ui';
 
 function PlayerBar(props) {
     let crapsPlayers = props.players
     let bgColor = (player) => {
-        return ((player.selected === true) ? 'lightyellow' : 'lightblue' )
+        return ((player.selected === true) ? 'yellow' : 'tealTint' )
     }
     let paneHeight = '40vh'
 
@@ -17,23 +17,25 @@ function PlayerBar(props) {
                 background={bgColor(crapsPlayers[index])}
                 border="muted"
                 elevation={2}
-                marginX={5}
-                marginY={24}
-                paddingTop={10}
-                paddingX={10}
-                width={ (80 / crapsPlayers.length) + 'vw' }
+                marginX={majorScale(1)}
+                marginY={majorScale(2)}
+                paddingTop={majorScale(1)}
+                paddingX={majorScale(1)}
+                width={ (majorScale(10) / crapsPlayers.length) + 'vw' }
                 height={paneHeight}
                 float='left'
                 onClick={(e) => {
-                    console.log('attempting to select index' + index)
+                    // console.log('attempting to select index' + index)
                     crapsPlayers[index].selected = (crapsPlayers[index].selected === true ? false : true)
                     props.onPlayersChange(crapsPlayers)
                 }}
             >
                 
                 <Pane
-                    paddingBottom={10}
-                ><Text>{player.name}</Text></Pane>
+                    paddingBottom={majorScale(1)}
+                >
+                    <Text>{player.name}</Text>
+                </Pane>
                 <Pane
                     //border='muted'
                     height='75%'
@@ -41,7 +43,16 @@ function PlayerBar(props) {
                     <Pane
                         style={{ alignself: 'flex-end'}}
                     >
-                        Test
+                        <TextInput
+                            width={majorScale(6)}
+                            onChange={e => {
+                                crapsPlayers[index].money = e.target.value
+                                props.onPlayersChange(crapsPlayers)
+                                console.log(crapsPlayers[index])
+                            }}
+                            onClick={e => e.stopPropagation()}
+                            value={crapsPlayers[index].money}
+                        />
                     </Pane>
                 </Pane>
                 <Pane
@@ -55,12 +66,10 @@ function PlayerBar(props) {
                         icon='trash'
                         intent='danger'
                         onClick={(e) => {
-                            console.log('attempting to delete index ' + index)
                             e.stopPropagation()
                             crapsPlayers.splice(index,1)
                             props.onPlayersChange(crapsPlayers)
                         }}
-                        //color={bgColor(crapsPlayers[index])}
                     />
                 </Pane>
             </Pane>
@@ -68,33 +77,39 @@ function PlayerBar(props) {
 
             {/* Add Player Button */}
             <Pane
-                background='lightgreen'
-                border="muted"
+                background='greenTint'
+                border='muted'
                 elevation={2}
-                marginLeft={12}
-                marginY={24}
-                paddingTop={5}
-                paddingX={5}
+                marginLeft={majorScale(2)}
+                marginY={majorScale(2)}
+                paddingTop={majorScale(1)}
+                paddingX={majorScale(1)}
                 width='5vw'
                 height={paneHeight}
                 float='left'
                 display='flex'
                 style={{ alignItems: 'center'}}
+                justifyContent='center'
                 
                 onClick={(e) => {
                     crapsPlayers.push({
                         id: crapsPlayers.length,
                         name: 'Player ' + (crapsPlayers.length + 1),
-                        selected: false
+                        selected: false,
+                        money: 0
                     })
                     props.onPlayersChange(crapsPlayers)
                 }}
             >
-                <Text
-                    height='100px'
-                >
-                    Add Player
-                </Text>
+                <Icon
+                    icon='add'
+                    color='green'
+                    // onClick={(e) => {
+                    //     e.stopPropagation()
+                    //     crapsPlayers.splice(index,1)
+                    //     props.onPlayersChange(crapsPlayers)
+                    // }}
+                />
             </Pane>
         </Pane>
     )
