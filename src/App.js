@@ -10,19 +10,37 @@ function App() {
   const [crapsPlayers, setCrapsPlayers] = useState([
     {
       id: 1,
-      name: 'Player 1',
+      name: 'Rocco',
       selected: false,
       money: 0
     },
     {
       id: 2,
-      name: 'Player 2',
+      name: 'Truckle',
       selected: false,
       money: 0
     },
     {
       id: 3,
-      name: 'Player 3',
+      name: 'Matt',
+      selected: false,
+      money: 0
+    },
+    {
+      id: 4,
+      name: 'Joe',
+      selected: false,
+      money: 0
+    },
+    {
+      id: 5,
+      name: 'Ben',
+      selected: false,
+      money: 0
+    },
+    {
+      id: 6,
+      name: 'Amalie',
       selected: false,
       money: 0
     }

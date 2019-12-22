@@ -1,5 +1,5 @@
-import React from 'react';
-import { majorScale, Pane, Text, TextInput, Icon, IconButton } from 'evergreen-ui';
+import React, { useState } from 'react';
+import { majorScale, minorScale, Pane, Text, Heading, TextInput, Icon, IconButton } from 'evergreen-ui';
 
 function PlayerBar(props) {
     let crapsPlayers = props.players
@@ -8,50 +8,140 @@ function PlayerBar(props) {
     }
     let paneHeight = '40vh'
 
+    const [editLock, setEditLock] = useState(false)
+
     return (
-        <Pane clearfix width='100%'>
+        <Pane 
+            clearfix 
+            width='100%'
+            display='flex'
+            marginBottom={majorScale(1)}
+            paddingX={majorScale(1)}
+        >
+            {/* Action Buttons */}
+            <Pane
+                    display='flex'
+                    height={paneHeight}
+                    marginY={majorScale(1)}
+                    paddingY={majorScale(1)}
+                    justifyContent='space-evenly'
+                    alignItems='center'
+                    flexDirection='column'
+                >
+                    <IconButton
+                        icon='lock'
+                        color='muted'
+                        marginX={minorScale(1)}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setEditLock(!editLock)
+                        }}
+                    />
+                    {/* <IconButton
+                        icon='edit'
+                        color='muted'
+                        marginX={minorScale(1)}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                        }}
+                    /> */}
+                    <IconButton
+                        icon='left-join'
+                        color='muted'
+                        marginX={minorScale(1)}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            crapsPlayers.forEach(player => {
+                                player.selected = false
+                            })
+                            props.onPlayersChange(crapsPlayers)
+                        }}
+                    />
+            </Pane>
+
+            {/* Player Tiles*/}
             {crapsPlayers.map((player, index) => (
             <Pane key={index}
-                // is="section"
-                // innerRef={(ref) => console.log(ref)}
                 background={bgColor(crapsPlayers[index])}
                 border="muted"
                 elevation={2}
                 marginX={majorScale(1)}
-                marginY={majorScale(2)}
+                marginY={majorScale(1)}
                 paddingTop={majorScale(1)}
                 paddingX={majorScale(1)}
                 width={ (majorScale(10) / crapsPlayers.length) + 'vw' }
                 height={paneHeight}
                 float='left'
                 onClick={(e) => {
-                    // console.log('attempting to select index' + index)
                     crapsPlayers[index].selected = (crapsPlayers[index].selected === true ? false : true)
                     props.onPlayersChange(crapsPlayers)
                 }}
             >
-                
+                {/* Player Name and Bet Amount */}
                 <Pane
-                    paddingBottom={majorScale(1)}
+                    padding={majorScale(1)}
+                    // border='muted'
                 >
-                    <Text>{player.name}</Text>
+                    { editLock ? (
+                        <Pane
+                            // border='muted'
+                            display='flex'
+                            justifyContent='space-around'
+                            alignItems='center'
+                            height='20%'
+                        >
+                            <TextInput
+                                width={majorScale(15)}
+                                height='15%'
+                                onChange={e => {
+                                    crapsPlayers[index].name = e.target.value
+                                    props.onPlayersChange(crapsPlayers)
+                                }}
+                                onClick={e => e.stopPropagation()}
+                                value={crapsPlayers[index].name}
+                            />
+                            <TextInput
+                                width={majorScale(6)}
+                                height='15%'
+                                onChange={e => {
+                                    crapsPlayers[index].money = e.target.value
+                                    props.onPlayersChange(crapsPlayers)
+                                }}
+                                onClick={e => e.stopPropagation()}
+                                value={crapsPlayers[index].money}
+                            />
+                            <IconButton 
+                                icon='trash'
+                                intent='danger'
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    crapsPlayers.splice(index,1)
+                                    props.onPlayersChange(crapsPlayers)
+                                }}
+                            />
+                        </Pane>
+                    ) : (
+                        <Pane
+                            // border='muted'
+                            display='flex'
+                            justifyContent='space-around'
+                            alignItems='center'
+                            height='20%'
+                        >
+                            <Heading size={600}>{player.name}</Heading>
+                            <Heading size={600} color='green'>${player.money}</Heading>
+                        </Pane>
+                    )}
                 </Pane>
+                {/* Player Main Section */}
                 <Pane
-                    //border='muted'
-                    height='75%'
+                    border='muted'
+                    height='65%'
+                    margin={majorScale(1)}
                 >
                     <Pane
                         style={{ alignself: 'flex-end'}}
                     >
-                        <TextInput
-                            width={majorScale(6)}
-                            onChange={e => {
-                                crapsPlayers[index].money = e.target.value
-                                props.onPlayersChange(crapsPlayers)
-                            }}
-                            onClick={e => e.stopPropagation()}
-                            value={crapsPlayers[index].money}
-                        />
                     </Pane>
                 </Pane>
                 <Pane
@@ -61,15 +151,7 @@ function PlayerBar(props) {
                     justifyContent='flex-end'
 
                 >
-                    <IconButton 
-                        icon='trash'
-                        intent='danger'
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            crapsPlayers.splice(index,1)
-                            props.onPlayersChange(crapsPlayers)
-                        }}
-                    />
+                    <Text>Footer</Text>
                 </Pane>
             </Pane>
             ))}
@@ -79,8 +161,8 @@ function PlayerBar(props) {
                 background='greenTint'
                 border='muted'
                 elevation={2}
-                marginLeft={majorScale(2)}
-                marginY={majorScale(2)}
+                marginLeft={majorScale(1)}
+                marginY={majorScale(1)}
                 paddingTop={majorScale(1)}
                 paddingX={majorScale(1)}
                 width='5vw'
