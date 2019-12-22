@@ -3,12 +3,18 @@ import { majorScale, minorScale, Pane, Text, Heading, TextInput, Icon, IconButto
 
 function PlayerBar(props) {
     let crapsPlayers = props.players
+    console.log(crapsPlayers)
     let bgColor = (player) => {
         return ((player.selected === true) ? 'yellow' : 'tealTint' )
     }
     let paneHeight = '40vh'
 
     const [editLock, setEditLock] = useState(false)
+
+    let styles = {
+        playerPane: {
+        }
+    }
 
     return (
         <Pane 
@@ -27,6 +33,7 @@ function PlayerBar(props) {
                     justifyContent='space-evenly'
                     alignItems='center'
                     flexDirection='column'
+                    clearfix
                 >
                     <IconButton
                         icon='lock'
@@ -65,8 +72,7 @@ function PlayerBar(props) {
                 background={bgColor(crapsPlayers[index])}
                 border="muted"
                 elevation={2}
-                marginX={majorScale(1)}
-                marginY={majorScale(1)}
+                margin={majorScale(1)}
                 paddingTop={majorScale(1)}
                 paddingX={majorScale(1)}
                 width={ (majorScale(10) / crapsPlayers.length) + 'vw' }
@@ -104,7 +110,7 @@ function PlayerBar(props) {
                                 width={majorScale(6)}
                                 height='15%'
                                 onChange={e => {
-                                    crapsPlayers[index].money = e.target.value
+                                    crapsPlayers[index].money = parseInt(e.target.value)
                                     props.onPlayersChange(crapsPlayers)
                                 }}
                                 onClick={e => e.stopPropagation()}
@@ -135,14 +141,29 @@ function PlayerBar(props) {
                 </Pane>
                 {/* Player Main Section */}
                 <Pane
-                    border='muted'
                     height='65%'
+                    display='flex'
+                    justifyContent='flex-begin'
+                    alignItems='flex-begin'
                     margin={majorScale(1)}
                 >
-                    <Pane
-                        style={{ alignself: 'flex-end'}}
-                    >
-                    </Pane>
+                    {player.bets.pass === true ? 
+                            <Pane key={player.name + '1'}
+                                paddingRight={minorScale(1)}
+                            >
+                                <Icon color='blue' icon="ring"/>
+                            </Pane>
+                        : ''
+                    }
+                    {player.bets.odds === true ? 
+                            <Pane key={player.name + '2'}
+                                paddingRight={minorScale(1)}
+                            >
+                                <Icon color='green' icon="selection"/>
+                            </Pane>
+                        : ''
+                    }
+
                 </Pane>
                 <Pane
                     // border='muted'
@@ -177,7 +198,8 @@ function PlayerBar(props) {
                         id: crapsPlayers.length,
                         name: 'Player ' + (crapsPlayers.length + 1),
                         selected: false,
-                        money: 0
+                        money: 0,
+                        bets: {}
                     })
                     props.onPlayersChange(crapsPlayers)
                 }}

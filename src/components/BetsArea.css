@@ -11,3 +11,7 @@
         transform: rotate(360deg);
     }
 }
+
+.betPane {
+    border-radius: 10px;
+}
