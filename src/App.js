@@ -123,17 +123,6 @@ function App() {
     handlePlayersChange(crapsPlayers)
   }
 
-  const clearAllBets = () => {
-    crapsPlayers.forEach(player => {
-      Object.keys(player.bets).map(betGroup => {
-        player.money += minBet * player.bets[betGroup].count
-        player.bets[betGroup].enabled = false
-        player.bets[betGroup].count = 0
-      })
-    })
-    handlePlayersChange(crapsPlayers)
-  }
-
   const calculateBets = (betID, winFlag, winRoll) => {
     //Iterate over each player
     crapsPlayers.forEach(player => {
@@ -202,67 +191,34 @@ function App() {
   }
 
   return ( 
-  <div className = "App" >
-    <Pane width = '100vw' > {
-      /* <Heading size={700}>Craps Calculator</Heading> */ } 
-    </Pane>
+    <div className = "App" >
+      <Pane width = '100vw' > {
+        /* <Heading size={700}>Craps Calculator</Heading> */ } 
+      </Pane>
 
-    {
-      /* Player Bar */ } <
-    PlayerBar players = {
-      crapsPlayers
-    }
-    onPlayersChange = {
-      handlePlayersChange
-    }
-    addPlayer = {
-      handleAddPlayer
-    }
-    gameState = {
-      gameState
-    }
-    onGameStateChange = {
-      handleGameStateChange
-    }
-    minBet = {
-      minBet
-    }
-    onMinBetChange = {
-      handleMinBetChange
-    }
-    debugMode = {
-      debugMode
-    }
-    onDebugChange = {
-      handleDebugChange
-    }
-    /> {
-      /* Bets */ } <
-    BetsArea minBet = {
-      minBet
-    }
-    players = {
-      crapsPlayers
-    }
-    gameState = {
-      gameState
-    }
-    debugMode = {
-      debugMode
-    }
-    onPlayersChange = {
-      handlePlayersChange
-    }
-    onGameStateChange = {
-      handleGameStateChange
-    }
-    onRoll = {
-      handleRollCalc
-    }
-    onClearAllBets = {
-      clearAllBets
-    }
-    /> </div>
+      { /* Player Bar */ } 
+      <PlayerBar 
+        players = { crapsPlayers }
+        onPlayersChange = { handlePlayersChange }
+        addPlayer = { handleAddPlayer }
+        gameState = { gameState }
+        onGameStateChange = { handleGameStateChange }
+        minBet = { minBet }
+        onMinBetChange = { handleMinBetChange }
+        debugMode = { debugMode }
+        onDebugChange = { handleDebugChange }
+      /> 
+      { /* Bets */ } 
+      <BetsArea 
+        minBet = { minBet }
+        players = { crapsPlayers }
+        gameState = { gameState }
+        debugMode = { debugMode }
+        onPlayersChange = { handlePlayersChange }
+        onGameStateChange = { handleGameStateChange }
+        onRoll = { handleRollCalc }
+      /> 
+    </div>
   );
 }
 

@@ -26,57 +26,56 @@ function PlayerBar(props) {
         >
             {/* Action Buttons */}
             <Pane
-                    display='flex'
-                    height={paneHeight}
-                    marginY={majorScale(1)}
-                    paddingY={majorScale(1)}
-                    justifyContent='space-evenly'
-                    alignItems='center'
-                    flexDirection='column'
-                    clearfix
-                >
-                    <IconButton
-                        icon='lock'
-                        color='muted'
-                        marginX={minorScale(1)}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            setEditLock(!editLock)
-                        }}
-                    />
-                    <IconButton
-                        icon='settings'
-                        color='muted'
-                        marginX={minorScale(1)}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            setSettingsPaneShow(!settingsPaneShow)
-                        }}
-                    />
-                    <IconButton
-                        icon='left-join'
-                        color='muted'
-                        marginX={minorScale(1)}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            crapsPlayers.forEach(player => {
-                                player.selected = false
-                            })
-                            props.onPlayersChange(crapsPlayers)
-                        }}
-                    />
-                    <IconButton
-                        icon='trash'
-                        intent='danger'
-                        marginX={minorScale(1)}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                        }}
-                    />
+                display='flex'
+                height={paneHeight}
+                marginY={majorScale(1)}
+                paddingY={majorScale(1)}
+                justifyContent='space-evenly'
+                alignItems='center'
+                flexDirection='column'
+                clearfix
+            >
+                <IconButton
+                    icon='lock'
+                    color='muted'
+                    marginX={minorScale(1)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setEditLock(!editLock)
+                    }}
+                />
+                <IconButton
+                    icon='settings'
+                    color='muted'
+                    marginX={minorScale(1)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setSettingsPaneShow(!settingsPaneShow)
+                    }}
+                />
+                <IconButton
+                    icon='left-join'
+                    color='muted'
+                    marginX={minorScale(1)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        crapsPlayers.forEach(player => {
+                            player.selected = false
+                        })
+                        props.onPlayersChange(crapsPlayers)
+                    }}
+                />
+                <IconButton
+                    icon='trash'
+                    intent='danger'
+                    marginX={minorScale(1)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                    }}
+                />
             </Pane>
 
             {/* Settings Pane */}
-
             { settingsPaneShow ? (
                 <Pane
                     display='flex'
@@ -108,16 +107,52 @@ function PlayerBar(props) {
             ) : (<div></div>)
             }
             
+            {/* Add Player Button */}
+            <Pane
+                background='greenTint'
+                border='muted'
+                borderRadius={majorScale(1)}
+                elevation={2}
+                activeElevation={0}
+                marginLeft={majorScale(1)}
+                marginY={majorScale(1)}
+                paddingTop={majorScale(1)}
+                paddingX={majorScale(1)}
+                width='5vw'
+                height={paneHeight}
+                float='left'
+                display='flex'
+                style={{ alignItems: 'center'}}
+                justifyContent='center'
+                
+                onClick={(e) => {
+                    
+                    props.addPlayer('Player ' + (crapsPlayers.length + 1))
+                }}
+            >
+                <Icon
+                    icon='add'
+                    color='green'
+                    // onClick={(e) => {
+                    //     e.stopPropagation()
+                    //     crapsPlayers.splice(index,1)
+                    //     props.onPlayersChange(crapsPlayers)
+                    // }}
+                />
+            </Pane>
+       
             {/* Player Tiles*/}
             {crapsPlayers.map((player, index) => (
             <Pane key={index}
                 background={bgColor(crapsPlayers[index])}
                 border="muted"
+                borderRadius={majorScale(1)}
                 elevation={2}
-                margin={majorScale(1)}
+                marginY={majorScale(1)}
+                marginX={minorScale(1)}
                 paddingTop={majorScale(1)}
                 paddingX={majorScale(1)}
-                width={ (majorScale(10) / crapsPlayers.length) + 'vw' }
+                width={ (majorScale(9) / crapsPlayers.length) + 'vw' }
                 height={paneHeight}
                 float='left'
                 onClick={(e) => {
@@ -229,37 +264,6 @@ function PlayerBar(props) {
                 </Pane>
             </Pane>
             ))}
-
-            {/* Add Player Button */}
-            <Pane
-                background='greenTint'
-                border='muted'
-                elevation={2}
-                marginLeft={majorScale(1)}
-                marginY={majorScale(1)}
-                paddingTop={majorScale(1)}
-                paddingX={majorScale(1)}
-                width='5vw'
-                height={paneHeight}
-                float='left'
-                display='flex'
-                style={{ alignItems: 'center'}}
-                justifyContent='center'
-                
-                onClick={(e) => {
-                    props.addPlayer('Player ' + (crapsPlayers.length + 1))
-                }}
-            >
-                <Icon
-                    icon='add'
-                    color='green'
-                    // onClick={(e) => {
-                    //     e.stopPropagation()
-                    //     crapsPlayers.splice(index,1)
-                    //     props.onPlayersChange(crapsPlayers)
-                    // }}
-                />
-            </Pane>
         </Pane>
     )
 }
