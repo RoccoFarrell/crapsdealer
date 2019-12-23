@@ -251,11 +251,10 @@ function BetsArea(props) {
                     rollHandler()
                 }}
             >
-                { debugMode ? debugDiceVals()  : (<div></div>)}
-                
                 <Pane>
                     <img alt='diceroll' width='100px' height='100px' src={img_diceroll} />
                 </Pane>
+                { debugMode ? debugDiceVals()  : (<div></div>)}
             </Pane>
 
             {/* Roll Details Area */}
@@ -290,16 +289,6 @@ function BetsArea(props) {
                     width='100%'
                 >
                     <Pane
-                    >
-                        <img 
-                            alt='onbutton' 
-                            height='50px' 
-                            width='50px' 
-                            src={img_onbutton}
-                            style={gameState.pointOn ? {} : {filter: 'opacity(25%)'}}
-                        />
-                    </Pane>
-                    <Pane
                         background='lightyellow'
                         border='muted'
                     >
@@ -307,13 +296,23 @@ function BetsArea(props) {
                             alt='offbutton' 
                             height='50px' 
                             width='50px' 
-                            src={img_offbutton}
-                            style={gameState.pointOn ? {filter: 'opacity(25%)'} : {}}
+                            src={gameState.pointOn ? img_onbutton : img_offbutton}
+                            // style={gameState.pointOn ? {} : {filter: 'opacity(25%)'}}
                         />
-                    </Pane>          
-                </Pane>
-                <Pane>
-                    
+                    </Pane>
+                    { gameState.pointOn ? (
+                        <Pane
+                            height='50px' 
+                            width='50px' 
+                            display='flex'
+                            justifyContent='center'
+                            alignItems='center'
+                            background='purpleTint'
+                        >
+                            <Heading size={600}>{ gameState.point }</Heading>
+                        </Pane>   
+                    ) : ''}
+                           
                 </Pane>
             </Pane>
 
@@ -397,13 +396,9 @@ function BetsArea(props) {
                         intent='danger'
                         marginY={minorScale(1)}
                         onClick={() => {
-                            crapsPlayers.forEach(player => {
-                                player.bets.pass = false
-                                player.bets.odds = false
-                            })
-                            props.onPlayersChange(crapsPlayers)
+                            props.onClearAllBets()
                         }}
-                    > Clear All </Button> 
+                    > Clear All  </Button> 
                 </Pane>
                 
                 {/* All Bets */}
