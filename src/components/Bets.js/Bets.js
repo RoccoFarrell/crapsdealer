@@ -120,7 +120,7 @@ function Bets(props) {
                         padding={minorScale(1)}
                         margin={minorScale(1)}
                         onClick={() => {
-                            if(!disabledOnPoint.includes(bet.id) && gameState.pointOn || !disabledOffPoint.includes(bet.id) && !gameState.pointOn){
+                            if((!disabledOnPoint.includes(bet.id) && gameState.pointOn) || (!disabledOffPoint.includes(bet.id) && !gameState.pointOn)){
                                 let selectedBet = bets.filter(b => {
                                     return b.id === bet.id
                                 })[0]
@@ -147,7 +147,7 @@ function Bets(props) {
 
     const processBets = (addFlag) => {
         Object.values(bets).forEach(bet => {
-            console.log(bet)
+            // console.log(bet)
             if(bet.selected){
                 adjustBets(bet.id, addFlag, false) 
             }
@@ -197,6 +197,10 @@ function Bets(props) {
                         }
                     }
                     break
+                case 3:
+                case 4:
+                case 5:
+                case 6:
                 default:
                     break
             }

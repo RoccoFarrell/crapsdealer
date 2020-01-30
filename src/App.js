@@ -28,6 +28,50 @@ function App() {
         odds: {
           enabled: false,
           count: 0
+        },
+        hard: {
+          four: {
+            enabled: false,
+            count: 0
+          },
+          six: {
+            enabled: false,
+            count: 0
+          },
+          eight: {
+            enabled: false,
+            count: 0
+          },
+          ten: {
+            enabled: false,
+            count: 0
+          }
+        },
+        buy: {
+          four: {
+            enabled: false,
+            count: 0
+          },
+          five: {
+            enabled: false,
+            count: 0
+          },
+          six: {
+            enabled: false,
+            count: 0
+          },
+          eight: {
+            enabled: false,
+            count: 0
+          },
+          nine: {
+            enabled: false,
+            count: 0
+          },
+          ten: {
+            enabled: false,
+            count: 0
+          }
         }
       }
     })

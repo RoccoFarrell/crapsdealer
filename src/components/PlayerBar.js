@@ -187,8 +187,13 @@ function PlayerBar(props) {
                                 width={majorScale(6)}
                                 height='15%'
                                 onChange={e => {
-                                    crapsPlayers[index].money = parseInt(e.target.value)
-                                    props.onPlayersChange(crapsPlayers)
+                                    if(e.target.value === ''){
+                                        crapsPlayers[index].money = 0
+                                    } else 
+                                    if(!isNaN(parseInt(e.target.value))){
+                                        crapsPlayers[index].money = parseInt(e.target.value)
+                                        props.onPlayersChange(crapsPlayers)
+                                    }
                                 }}
                                 onClick={e => e.stopPropagation()}
                                 value={crapsPlayers[index].money}
